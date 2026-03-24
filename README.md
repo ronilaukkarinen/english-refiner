@@ -1,8 +1,8 @@
 # English Refiner CLI
 
-A fast TUI tool for refining English text using LLM via OpenRouter. Fixes grammar while preserving your original voice and meaning.
+**A fast TUI tool for refining English text using LLM via OpenRouter. Fixes grammar while preserving your original voice and meaning.**
 
-Designed for quick grammar fixes on emails, Slack messages, and GitHub issues.
+<img width="836" height="368" alt="image" src="https://github.com/user-attachments/assets/ddbff1ef-c3fc-418b-8b54-086ed666c5e6" />
 
 ## Dependencies
 
