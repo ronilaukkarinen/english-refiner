@@ -48,20 +48,20 @@ Currently using `liquid/lfm-2-24b-a2b` via OpenRouter. Change the `MODEL` variab
 
 ## Model benchmarks
 
-Test input: "Hello, I suddenly cant drag anything to the calendar. I have tried restarting the app but that didnt help. Its been like this all day. What is going on? Best regards,"
+Tested with a short email containing common grammar mistakes (missing apostrophes, missing commas, informal phrasing).
 
-| Model | Speed | Quality | Notes |
-|-------|-------|---------|-------|
-| liquid/lfm-2-24b-a2b | 0.8s | Perfect | Minimal changes, added comma after "app" |
-| inception/mercury-2 | 1.2s | Perfect | Same quality, added comma after "app" |
-| google/gemini-3.1-flash-lite-preview | 2.2s | Perfect | Same quality |
-| qwen/qwen3.5-122b-a10b | 3.5s | Perfect | Missing comma after "app" |
-| qwen/qwen3.5-35b-a3b | 4.0s | Perfect | Missing comma after "app" |
-| qwen/qwen3.5-flash-02-23 | 5.3s | Perfect | Missing comma after "app" |
-| z-ai/glm-5-turbo | 8.3s | Perfect | Missing comma after "app" |
-| bytedance-seed/seed-2.0-mini | 13.0s | OK | Removed blank line after "Hello," |
-| qwen/qwen3.5-9b | 15.2s | Perfect | Way too slow |
-| bytedance-seed/seed-2.0-lite | 15.7s | Perfect | Way too slow |
-| openai/gpt-oss-120b | 36.3s | Perfect | Best quality but way too slow |
-| openai/gpt-4.1-nano | 1.1s | Good | Changed "have tried" to "tried", added "onto" |
-| google/gemini-2.5-flash-lite | 0.7s | Good | Changed "It's been" to "This has been happening" |
+| Model | Speed | Quality |
+|-------|-------|---------|
+| liquid/lfm-2-24b-a2b | 0.8s | Perfect |
+| inception/mercury-2 | 1.2s | Perfect |
+| google/gemini-3.1-flash-lite-preview | 2.2s | Perfect |
+| qwen/qwen3.5-122b-a10b | 3.5s | Perfect |
+| qwen/qwen3.5-35b-a3b | 4.0s | Perfect |
+| qwen/qwen3.5-flash-02-23 | 5.3s | Perfect |
+| z-ai/glm-5-turbo | 8.3s | Perfect |
+| bytedance-seed/seed-2.0-mini | 13.0s | OK, altered formatting |
+| qwen/qwen3.5-9b | 15.2s | Too slow |
+| bytedance-seed/seed-2.0-lite | 15.7s | Too slow |
+| openai/gpt-oss-120b | 36.3s | Best quality but too slow |
+| openai/gpt-4.1-nano | 1.1s | Changed too many words |
+| google/gemini-2.5-flash-lite | 0.7s | Changed meaning slightly |
