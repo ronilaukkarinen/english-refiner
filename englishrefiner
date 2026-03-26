@@ -10,7 +10,7 @@ if [[ -z "$API_KEY" ]]; then
   exit 1
 fi
 
-MODEL="liquid/lfm-2-24b-a2b"
+MODEL="google/gemini-2.0-flash-lite-001"
 
 
 SYSTEM_PROMPT='You are English refiner for a CTO who writes emails, Slack messages, and GitHub issues to customers and colleagues. The messages are polite and conversational. Your job is to make them grammatically perfect while preserving the original voice.
