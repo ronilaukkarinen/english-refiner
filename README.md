@@ -11,19 +11,37 @@
 - curl
 - [OpenRouter](https://openrouter.ai/) API key
 
-## Installation
+## Installation on macOS
 
 ```bash
-# Install dependencies (macOS)
 brew install gum jq
 
-# Create config directory and add your OpenRouter API key
 mkdir -p ~/.config/englishrefiner
 echo -n 'your-openrouter-api-key-here' > ~/.config/englishrefiner/key
 chmod 600 ~/.config/englishrefiner/key
 
-# Install the script
 sudo cp englishrefiner /usr/local/bin/englishrefiner
+sudo chmod +x /usr/local/bin/englishrefiner
+```
+
+## Installation on Linux
+
+Install dependencies for your distro. For Wayland, install `wl-clipboard`. For X11, install `xclip` instead.
+
+```bash
+# Arch
+sudo pacman -S gum jq wl-clipboard
+
+# Debian/Ubuntu
+sudo apt install gum jq wl-clipboard
+```
+
+```bash
+mkdir -p ~/.config/englishrefiner
+echo -n 'your-openrouter-api-key-here' > ~/.config/englishrefiner/key
+chmod 600 ~/.config/englishrefiner/key
+
+sudo cp englishrefiner-linux /usr/local/bin/englishrefiner
 sudo chmod +x /usr/local/bin/englishrefiner
 ```
 
