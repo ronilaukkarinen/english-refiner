@@ -62,7 +62,7 @@ Result is always auto-copied to clipboard.
 
 ## Model
 
-Currently using `google/gemini-2.0-flash-lite-001` via OpenRouter. Change the `MODEL` variable in the script to swap models.
+Currently using `openai/gpt-5-chat` via OpenRouter. Change the `MODEL` variable in the script to swap models.
 
 ## Model benchmarks
 

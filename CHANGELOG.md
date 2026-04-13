@@ -1,3 +1,12 @@
+### 1.2.0: 2026-04-13
+
+* Switch model to openai/gpt-5-chat for smarter refinement with consistent capitalization
+* Restore original open-webui prompt that actively refines wording
+* Add sentence-case capitalization rules from open-webui system prompt
+* Add rule to preserve curse words and crude language as written
+* Add rule to replace spoken-word slang with proper written English
+* Update englishrefiner-linux to match macOS script
+
 ### 1.1.0: 2026-04-05
 
 * Add Linux support with separate englishrefiner-linux script
