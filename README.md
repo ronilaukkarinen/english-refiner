@@ -60,6 +60,30 @@ echo 'your text' | englishrefiner
 
 Result is always auto-copied to clipboard.
 
+## Quick AI
+
+A second tool, `quickai`, uses the same TUI but for quick one-off questions instead of refining text. It uses `openai/gpt-4.1-nano` for fast, cheap answers and shares the same OpenRouter API key setup.
+
+```bash
+mkdir -p ~/.config/quickai
+echo -n 'your-openrouter-api-key-here' > ~/.config/quickai/key
+chmod 600 ~/.config/quickai/key
+
+sudo cp quickai /usr/local/bin/quickai
+sudo chmod +x /usr/local/bin/quickai
+```
+
+```bash
+# TUI mode - opens editor, type your question, Ctrl+D to submit
+quickai
+
+# Clipboard mode - asks about clipboard contents
+quickai -c
+
+# Pipe mode
+echo 'your question' | quickai
+```
+
 ## Model
 
 Currently using `openai/gpt-5-chat` via OpenRouter. Change the `MODEL` variable in the script to swap models.

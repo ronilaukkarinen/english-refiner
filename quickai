@@ -1,0 +1,133 @@
+#!/bin/bash
+# Quick AI TUI
+# Usage: quickai          (opens TUI prompt)
+#        quickai -c       (asks about clipboard contents)
+#        echo "text" | quickai  (pipe mode)
+
+# Detect clipboard tool
+if command -v pbcopy &>/dev/null; then
+  CLIP_COPY="pbcopy"
+  CLIP_PASTE="pbpaste"
+elif command -v wl-copy &>/dev/null; then
+  CLIP_COPY="wl-copy"
+  CLIP_PASTE="wl-paste"
+elif command -v xclip &>/dev/null; then
+  CLIP_COPY="xclip -selection clipboard"
+  CLIP_PASTE="xclip -selection clipboard -o"
+else
+  echo "Error: No clipboard tool found. Install wl-clipboard (Wayland), xclip (X11), or pbcopy (macOS)." >&2
+  exit 1
+fi
+
+API_KEY="$(cat ~/.config/quickai/key 2>/dev/null)"
+if [[ -z "$API_KEY" ]]; then
+  echo "Error: No API key found at ~/.config/quickai/key" >&2
+  exit 1
+fi
+
+MODEL="openai/gpt-4.1-nano"
+
+SYSTEM_PROMPT=$(cat <<'PROMPT'
+You are Quick AI, a fast assistant for short one-off questions asked from the terminal.
+
+Rules:
+
+- Answer directly and concisely, no fluff, no preamble like "Sure, here is the answer:"
+- Prefer short, plain answers. Use a few sentences or a short list only if it genuinely helps.
+- If the question is code or a command, give the code or command first, then a brief explanation only if needed
+- Do not ask clarifying questions, make a reasonable assumption and answer
+- Do not explain your reasoning process, just give the answer
+- ALWAYS use regular dashes "-" in your responses, never emdashes
+- Never use curly/smart quotation marks, always straight quotes ' and "
+- Use proper three dots ... instead of the ellipsis character
+PROMPT
+)
+
+call_api() {
+  local input="$1"
+  local escaped_input
+  escaped_input="$(echo "$input" | jq -Rsa .)"
+  local escaped_system
+  escaped_system="$(echo "$SYSTEM_PROMPT" | jq -Rsa .)"
+
+  local response
+  response="$(curl -s https://openrouter.ai/api/v1/chat/completions \
+    -H "Authorization: Bearer $API_KEY" \
+    -H "Content-Type: application/json" \
+    -d "{
+      \"model\": \"$MODEL\",
+      \"messages\": [
+        {\"role\": \"system\", \"content\": $escaped_system},
+        {\"role\": \"user\", \"content\": $escaped_input}
+      ]
+    }")"
+
+  local error
+  error="$(echo "$response" | jq -r '.error.message // empty')"
+  if [[ -n "$error" ]]; then
+    echo "ERROR:$error"
+    return 1
+  fi
+
+  echo "$response" | jq -r '.choices[0].message.content // "Error: no response"'
+}
+
+ask() {
+  local input="$1"
+  if [[ -z "$input" ]]; then
+    echo "Empty input, nothing to ask." >&2
+    return 1
+  fi
+
+  gum style --foreground 245 "Thinking..."
+  RESULT="$(call_api "$input")"
+
+  if [[ "$RESULT" == ERROR:* ]]; then
+    echo ""
+    gum style --foreground 196 --bold "Error: ${RESULT#ERROR:}"
+    return 1
+  fi
+
+  echo ""
+  echo "$RESULT" | gum style --border rounded --padding "1 2" --border-foreground 214 --width 70
+  echo ""
+
+  printf "%s" "$RESULT" | $CLIP_COPY
+  gum style --foreground 245 "Copied to clipboard."
+}
+
+# Pipe mode
+if [[ ! -t 0 ]]; then
+  INPUT="$(cat)"
+  ask "$INPUT"
+  exit 0
+fi
+
+# Clipboard mode
+if [[ "$1" == "-c" ]]; then
+  INPUT="$($CLIP_PASTE)"
+  ask "$INPUT"
+  exit 0
+fi
+
+# TUI mode
+while true; do
+  echo ""
+  gum style --bold --foreground 214 "Quick AI"
+  gum style --foreground 245 "Type your question. Ctrl+D to submit, Ctrl+C to quit."
+  echo ""
+
+  INPUT="$(gum write --placeholder "Ask me anything..." --width 70 --height 10 --char-limit 0)"
+
+  if [[ $? -ne 0 || -z "$INPUT" ]]; then
+    break
+  fi
+
+  ask "$INPUT"
+
+  echo ""
+  AGAIN="$(gum choose "Ask another" "Quit")"
+  if [[ "$AGAIN" != "Ask another" ]]; then
+    break
+  fi
+done
