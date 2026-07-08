@@ -19,9 +19,9 @@ else
   exit 1
 fi
 
-API_KEY="$(cat /tmp/quickaianthropic 2>/dev/null)"
+API_KEY="$(cat ~/.config/quickai/key 2>/dev/null)"
 if [[ -z "$API_KEY" ]]; then
-  echo "Error: No API key found at /tmp/quickaianthropic" >&2
+  echo "Error: No API key found at ~/.config/quickai/key" >&2
   exit 1
 fi
 

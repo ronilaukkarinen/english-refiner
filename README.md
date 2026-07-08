@@ -16,8 +16,9 @@
 ```bash
 brew install gum jq
 
-echo -n 'your-anthropic-api-key-here' > /tmp/quickaianthropic
-chmod 600 /tmp/quickaianthropic
+mkdir -p ~/.config/englishrefiner
+echo -n 'your-anthropic-api-key-here' > ~/.config/englishrefiner/key
+chmod 600 ~/.config/englishrefiner/key
 
 sudo cp englishrefiner /usr/local/bin/englishrefiner
 sudo chmod +x /usr/local/bin/englishrefiner
@@ -36,14 +37,13 @@ sudo apt install gum jq wl-clipboard
 ```
 
 ```bash
-echo -n 'your-anthropic-api-key-here' > /tmp/quickaianthropic
-chmod 600 /tmp/quickaianthropic
+mkdir -p ~/.config/englishrefiner
+echo -n 'your-anthropic-api-key-here' > ~/.config/englishrefiner/key
+chmod 600 ~/.config/englishrefiner/key
 
 sudo cp englishrefiner-linux /usr/local/bin/englishrefiner
 sudo chmod +x /usr/local/bin/englishrefiner
 ```
-
-Note: `/tmp` is typically cleared on reboot, so the API key needs to be re-added after a restart.
 
 ## Usage
 
@@ -62,13 +62,14 @@ Result is always auto-copied to clipboard.
 
 ## Quick AI
 
-A second tool, `quickai`, uses the same TUI but for quick one-off questions instead of refining text. It uses Claude Haiku 4.5 (`claude-haiku-4-5-20251001`) for fast, cheap answers and shares the same Anthropic API key setup.
+A second tool, `quickai`, uses the same TUI but for quick one-off questions instead of refining text. It uses Claude Haiku 4.5 (`claude-haiku-4-5-20251001`) for fast, cheap answers and its own Anthropic API key.
 
 An alias `quai` is also available for convenience.
 
 ```bash
-echo -n 'your-anthropic-api-key-here' > /tmp/quickaianthropic
-chmod 600 /tmp/quickaianthropic
+mkdir -p ~/.config/quickai
+echo -n 'your-anthropic-api-key-here' > ~/.config/quickai/key
+chmod 600 ~/.config/quickai/key
 
 sudo cp quickai /usr/local/bin/quickai
 sudo chmod +x /usr/local/bin/quickai
