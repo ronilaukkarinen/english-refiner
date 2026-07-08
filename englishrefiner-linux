@@ -19,13 +19,13 @@ else
   exit 1
 fi
 
-API_KEY="$(cat ~/.config/englishrefiner/key 2>/dev/null)"
+API_KEY="$(cat /tmp/quickaianthropic 2>/dev/null)"
 if [[ -z "$API_KEY" ]]; then
-  echo "Error: No API key found at ~/.config/englishrefiner/key" >&2
+  echo "Error: No API key found at /tmp/quickaianthropic" >&2
   exit 1
 fi
 
-MODEL="openai/gpt-5-chat"
+MODEL="claude-haiku-4-5-20251001"
 
 
 SYSTEM_PROMPT=$(cat <<'PROMPT'
@@ -97,13 +97,15 @@ call_api() {
   escaped_system="$(echo "$SYSTEM_PROMPT" | jq -Rsa .)"
 
   local response
-  response="$(curl -s https://openrouter.ai/api/v1/chat/completions \
-    -H "Authorization: Bearer $API_KEY" \
+  response="$(curl -s https://api.anthropic.com/v1/messages \
+    -H "x-api-key: $API_KEY" \
+    -H "anthropic-version: 2023-06-01" \
     -H "Content-Type: application/json" \
     -d "{
       \"model\": \"$MODEL\",
+      \"max_tokens\": 1024,
+      \"system\": $escaped_system,
       \"messages\": [
-        {\"role\": \"system\", \"content\": $escaped_system},
         {\"role\": \"user\", \"content\": $escaped_input}
       ]
     }")"
@@ -115,7 +117,7 @@ call_api() {
     return 1
   fi
 
-  echo "$response" | jq -r '.choices[0].message.content // "Error: no response"'
+  echo "$response" | jq -r '.content[0].text // "Error: no response"'
 }
 
 refine() {

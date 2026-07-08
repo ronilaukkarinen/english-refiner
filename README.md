@@ -1,6 +1,6 @@
 # English Refiner CLI
 
-**A fast TUI tool for refining English text using LLM via OpenRouter. Fixes grammar while preserving your original voice and meaning.**
+**A fast TUI tool for refining English text using Claude via the Anthropic API. Fixes grammar while preserving your original voice and meaning.**
 
 <img width="836" height="368" alt="image" src="https://github.com/user-attachments/assets/ddbff1ef-c3fc-418b-8b54-086ed666c5e6" />
 
@@ -9,16 +9,15 @@
 - [gum](https://github.com/charmbracelet/gum) - TUI components
 - [jq](https://jqlang.github.io/jq/) - JSON parsing
 - curl
-- [OpenRouter](https://openrouter.ai/) API key
+- [Anthropic](https://console.anthropic.com/) API key
 
 ## Installation on macOS
 
 ```bash
 brew install gum jq
 
-mkdir -p ~/.config/englishrefiner
-echo -n 'your-openrouter-api-key-here' > ~/.config/englishrefiner/key
-chmod 600 ~/.config/englishrefiner/key
+echo -n 'your-anthropic-api-key-here' > /tmp/quickaianthropic
+chmod 600 /tmp/quickaianthropic
 
 sudo cp englishrefiner /usr/local/bin/englishrefiner
 sudo chmod +x /usr/local/bin/englishrefiner
@@ -37,13 +36,14 @@ sudo apt install gum jq wl-clipboard
 ```
 
 ```bash
-mkdir -p ~/.config/englishrefiner
-echo -n 'your-openrouter-api-key-here' > ~/.config/englishrefiner/key
-chmod 600 ~/.config/englishrefiner/key
+echo -n 'your-anthropic-api-key-here' > /tmp/quickaianthropic
+chmod 600 /tmp/quickaianthropic
 
 sudo cp englishrefiner-linux /usr/local/bin/englishrefiner
 sudo chmod +x /usr/local/bin/englishrefiner
 ```
+
+Note: `/tmp` is typically cleared on reboot, so the API key needs to be re-added after a restart.
 
 ## Usage
 
@@ -62,12 +62,13 @@ Result is always auto-copied to clipboard.
 
 ## Quick AI
 
-A second tool, `quickai`, uses the same TUI but for quick one-off questions instead of refining text. It uses `openai/gpt-4.1-nano` for fast, cheap answers and shares the same OpenRouter API key setup.
+A second tool, `quickai`, uses the same TUI but for quick one-off questions instead of refining text. It uses Claude Haiku 4.5 (`claude-haiku-4-5-20251001`) for fast, cheap answers and shares the same Anthropic API key setup.
+
+An alias `quai` is also available for convenience.
 
 ```bash
-mkdir -p ~/.config/quickai
-echo -n 'your-openrouter-api-key-here' > ~/.config/quickai/key
-chmod 600 ~/.config/quickai/key
+echo -n 'your-anthropic-api-key-here' > /tmp/quickaianthropic
+chmod 600 /tmp/quickaianthropic
 
 sudo cp quickai /usr/local/bin/quickai
 sudo chmod +x /usr/local/bin/quickai
@@ -86,11 +87,11 @@ echo 'your question' | quickai
 
 ## Model
 
-Currently using `openai/gpt-5-chat` via OpenRouter. Change the `MODEL` variable in the script to swap models.
+Currently using `claude-haiku-4-5-20251001` directly via the Anthropic API. Change the `MODEL` variable in the script to swap models.
 
 ## Model benchmarks
 
-Tested with a message containing typos, comma issues, and wrong article usage. Quality rated on whether meaning is preserved while improving readability.
+Tested with a message containing typos, comma issues, and wrong article usage. Quality rated on whether meaning is preserved while improving readability. These benchmarks predate the switch to direct Anthropic API and are kept for reference on model choice.
 
 | Model | Speed | Quality | Notes |
 |-------|-------|---------|-------|
