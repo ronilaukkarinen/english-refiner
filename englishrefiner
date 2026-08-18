@@ -10,11 +10,35 @@ if [[ -z "$API_KEY" ]]; then
   exit 1
 fi
 
-MODEL="claude-haiku-4-5-20251001"
+# Provider is detected from the key prefix, so an OpenRouter key and an Anthropic
+# key both work without editing the script. An `sk-or-` key was previously left in
+# place while the script called Anthropic directly, which failed with
+# "API key is invalid" and made the repo uninstallable.
+case "$API_KEY" in
+  sk-or-*) PROVIDER="openrouter" ;;
+  *)       PROVIDER="anthropic" ;;
+esac
+
+# Fastest model that still refines correctly, per provider. Measured 18.8.2026 on
+# identical input, three runs each, wall clock. See the benchmark table in README.
+if [[ "$PROVIDER" == "openrouter" ]]; then
+  MODEL="${ENGLISHREFINER_MODEL:-google/gemini-2.5-flash-lite}"
+else
+  MODEL="${ENGLISHREFINER_MODEL:-claude-haiku-4-5-20251001}"
+fi
 
 
 SYSTEM_PROMPT=$(cat <<'PROMPT'
 You are English refiner. Use a casual, but professional tone. Choose your words wisely, prefer better and smart words in each situation but in a way it does not make the message difficult to understand.
+
+
+CRITICAL - PRESERVE THE AUTHOR'S VOICE. You are a proofreader, not a rewriter:
+- Keep the author's register exactly. Casual stays casual. Do not formalise.
+- Never delete or relocate openers, fillers or closers such as "hey", "so", "tbh", "no rush".
+- Never swap a word for a synonym unless the original is wrong. Keep "config" as "config", "can" as "can".
+- Never reorder clauses or move a phrase to a different position in the sentence.
+- Never expand a short form into a longer one unless it is grammatically wrong.
+- Fix only: spelling, grammar, punctuation, and spoken-word slang that is not a filler.
 
 Your only purpose is to:
 
@@ -81,18 +105,32 @@ call_api() {
   escaped_system="$(echo "$SYSTEM_PROMPT" | jq -Rsa .)"
 
   local response
-  response="$(curl -s https://api.anthropic.com/v1/messages \
-    -H "x-api-key: $API_KEY" \
-    -H "anthropic-version: 2023-06-01" \
-    -H "Content-Type: application/json" \
-    -d "{
-      \"model\": \"$MODEL\",
-      \"max_tokens\": 1024,
-      \"system\": $escaped_system,
-      \"messages\": [
-        {\"role\": \"user\", \"content\": $escaped_input}
-      ]
-    }")"
+  if [[ "$PROVIDER" == "openrouter" ]]; then
+    response="$(curl -s https://openrouter.ai/api/v1/chat/completions \
+      -H "Authorization: Bearer $API_KEY" \
+      -H "Content-Type: application/json" \
+      -d "{
+        \"model\": \"$MODEL\",
+        \"max_tokens\": 1024,
+        \"messages\": [
+          {\"role\": \"system\", \"content\": $escaped_system},
+          {\"role\": \"user\", \"content\": $escaped_input}
+        ]
+      }")"
+  else
+    response="$(curl -s https://api.anthropic.com/v1/messages \
+      -H "x-api-key: $API_KEY" \
+      -H "anthropic-version: 2023-06-01" \
+      -H "Content-Type: application/json" \
+      -d "{
+        \"model\": \"$MODEL\",
+        \"max_tokens\": 1024,
+        \"system\": $escaped_system,
+        \"messages\": [
+          {\"role\": \"user\", \"content\": $escaped_input}
+        ]
+      }")"
+  fi
 
   local error
   error="$(echo "$response" | jq -r '.error.message // empty')"
@@ -101,7 +139,11 @@ call_api() {
     return 1
   fi
 
-  echo "$response" | jq -r '.content[0].text // "Error: no response"'
+  if [[ "$PROVIDER" == "openrouter" ]]; then
+    echo "$response" | jq -r '.choices[0].message.content // "Error: no response"'
+  else
+    echo "$response" | jq -r '.content[0].text // "Error: no response"'
+  fi
 }
 
 refine() {

@@ -1,3 +1,10 @@
+### 1.3.0: 2026-08-18
+
+* Detect provider from the key prefix so either key works
+* Default OpenRouter to google/gemini-2.5-flash-lite for sub-second refining
+* Add voice-preservation rules so the fast model proofreads instead of rewriting
+* Allow overriding the model with ENGLISHREFINER_MODEL
+
 ### 1.2.0: 2026-04-13
 
 * Switch model to openai/gpt-5-chat for smarter refinement with consistent capitalization
