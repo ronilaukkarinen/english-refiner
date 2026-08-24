@@ -1,3 +1,10 @@
+### 1.4.0: 2026-08-24
+
+* Default OpenRouter to google/gemini-3.7-flash
+* Replace the system prompt with a shorter refiner prompt
+* Allow reordering words when a sentence reads badly
+* Drop the voice-preservation, sentence-case and slang blocks
+
 ### 1.3.0: 2026-08-18
 
 * Detect provider from the key prefix so either key works

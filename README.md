@@ -1,6 +1,6 @@
 # English Refiner CLI
 
-**A fast TUI tool for refining English text using Claude via the Anthropic API. Fixes grammar while preserving your original voice and meaning.**
+**A fast TUI tool for refining English text via OpenRouter or the Anthropic API. Fixes grammar and wording while keeping the message intact.**
 
 <img width="836" height="368" alt="image" src="https://github.com/user-attachments/assets/ddbff1ef-c3fc-418b-8b54-086ed666c5e6" />
 
@@ -88,7 +88,7 @@ echo 'your question' | quickai
 
 ## Model
 
-Currently using `claude-haiku-4-5-20251001` directly via the Anthropic API. Change the `MODEL` variable in the script to swap models.
+The provider is detected from the key prefix. An `sk-or-` key uses OpenRouter with `google/gemini-3.7-flash`, anything else uses the Anthropic API with `claude-haiku-4-5-20251001`. Set `ENGLISHREFINER_MODEL` or change the `MODEL` variable in the script to swap models.
 
 ## Model benchmarks
 
