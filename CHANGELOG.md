@@ -1,3 +1,7 @@
+### 1.4.1: 2026-08-29
+
+* Track the executable bit on the scripts
+
 ### 1.4.0: 2026-08-24
 
 * Default OpenRouter to google/gemini-3.7-flash
