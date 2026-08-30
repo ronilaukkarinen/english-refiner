@@ -1,3 +1,9 @@
+### 1.5.0: 2026-08-30
+
+* Stop expanding typos and unknown words into invented ones
+* Keep numbers as written, space separator instead of comma
+* Restore profanity preservation dropped in 1.4.0
+
 ### 1.4.1: 2026-08-29
 
 * Track the executable bit on the scripts
